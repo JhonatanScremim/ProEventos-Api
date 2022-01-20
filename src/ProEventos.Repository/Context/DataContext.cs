@@ -15,7 +15,17 @@ namespace ProEventos.Repository.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder){
             modelBuilder.Entity<EventLecturer>()
-            .HasKey(x => new {x.EventId, x.LecturerId});
+                .HasKey(x => new {x.EventId, x.LecturerId});
+
+            modelBuilder.Entity<Event>()
+                .HasMany(e => e.SocialNetworks)
+                .WithOne(rs => rs.Event)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Lecturer>()
+                .HasMany(e => e.SocialNetworks)
+                .WithOne(rs => rs.Lecturer)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

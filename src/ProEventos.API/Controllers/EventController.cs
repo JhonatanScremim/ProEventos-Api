@@ -36,7 +36,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEventById([FromQuery] int id){
+        public async Task<IActionResult> GetEventById(int id){
             try{
 
                 var response = await _eventService.GetEventByIdAsync(id, true);
@@ -53,12 +53,12 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpGet("name/{name}")]
-        public async Task<IActionResult> GetEventByName([FromQuery] string name){
+        public async Task<IActionResult> GetEventByName(string name){
             try{
                 var response = await _eventService.GetAllEventsByNameAsync(name, true);
 
-                if(response == null)
-                    return NotFound("Events not found");
+                if(response == null || !response.Any())
+                    return NotFound("Event not found");
 
                 return Ok(response);
             }
@@ -85,7 +85,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEvent([FromQuery] int id, [FromBody] Event model){
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event model){
             try{
                 var response = await _eventService.UpdateEventAsync(id, model);
 
@@ -101,9 +101,9 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEvent([FromQuery] int id){
+        public async Task<IActionResult> DeleteEvent(int id){
             try{
-                return await _eventService.DeleteEventAsync(id) ? BadRequest("Unable to delete") : Ok("Success");
+                return await _eventService.DeleteEventAsync(id) ? Ok("Success") : BadRequest("Unable to delete");
             }
             catch(Exception e){
                 return this.StatusCode(StatusCodes.Status500InternalServerError,

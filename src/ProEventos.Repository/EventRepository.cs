@@ -22,7 +22,7 @@ namespace ProEventos.Repository
                 query.Include(x => x.EventLecturers).ThenInclude(x => x.Lecturer);
             }
             
-            return await query.OrderBy(x => x.Id).ToArrayAsync();
+            return await query.AsNoTracking().OrderBy(x => x.Id).ToArrayAsync();
         }
 
         public async Task<Event[]> GetAllEventsByNameAsync(string name, bool includeLecturers)
@@ -33,7 +33,7 @@ namespace ProEventos.Repository
                 query.Include(x => x.EventLecturers).ThenInclude(x => x.Lecturer);
             }
             
-            return await query.Where(x => x.Name.ToLower().Contains(name.ToLower()))
+            return await query.AsNoTracking().Where(x => x.Name.ToLower().Contains(name.ToLower()))
                 .OrderBy(x => x.Id).ToArrayAsync();
         }
 
@@ -46,7 +46,7 @@ namespace ProEventos.Repository
                 query.Include(x => x.EventLecturers).ThenInclude(x => x.Lecturer);
             }
             
-            return await query.FirstOrDefaultAsync(x => x.Id == id);
+            return await query.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

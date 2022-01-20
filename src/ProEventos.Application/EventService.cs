@@ -29,7 +29,7 @@ namespace ProEventos.Application
         
         public async Task<Event> UpdateEventAsync(int eventId, Event model)
         {
-            if(model.Id == default)
+            if(eventId == default || model.Id == default)
                 throw new Exception("Event ID is required!"); 
 
             var oldEvent = await _eventRepository.GetEventByIdAsync(eventId, false);
