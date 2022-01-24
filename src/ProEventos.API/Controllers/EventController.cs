@@ -9,6 +9,7 @@ using ProEventos.Domain;
 using ProEventos.Repository.Context;
 using ProEventos.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
+using ProEventos.Application.ViewModels;
 
 namespace ProEventos.API.Controllers
 {
@@ -69,7 +70,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateEvent([FromBody] Event model){
+        public async Task<IActionResult> CreateEvent([FromBody] EventViewModel model){
             try{
                 var response = await _eventService.CreateEventAsync(model);
 
@@ -85,7 +86,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event model){
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] EventViewModel model){
             try{
                 var response = await _eventService.UpdateEventAsync(id, model);
 
@@ -103,7 +104,9 @@ namespace ProEventos.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id){
             try{
-                return await _eventService.DeleteEventAsync(id) ? Ok("Success") : BadRequest("Unable to delete");
+                return await _eventService.DeleteEventAsync(id) ? 
+                    Ok("Success") : 
+                    BadRequest("Unable to delete");
             }
             catch(Exception e){
                 return this.StatusCode(StatusCodes.Status500InternalServerError,

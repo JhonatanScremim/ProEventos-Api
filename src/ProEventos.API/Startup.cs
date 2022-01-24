@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using AutoMapper;
+
 using ProEventos.Application;
 using ProEventos.Repository;
 using ProEventos.Repository.Interfaces;
@@ -39,6 +41,8 @@ namespace ProEventos.API
                 x => x.SerializerSettings.ReferenceLoopHandling =
                     Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             //services
             services.AddScoped<IEventService, EventService>();

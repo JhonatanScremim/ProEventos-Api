@@ -1,15 +1,17 @@
 using System.Threading.Tasks;
+
 using ProEventos.Domain;
+using ProEventos.Application.ViewModels;
 
 namespace ProEventos.Application.Interfaces
 {
     public interface IEventService
     {
-         Task<Event> CreateEventAsync(Event model);
-         Task<Event> UpdateEventAsync(int eventId, Event model);
+         Task<EventViewModel> CreateEventAsync(EventViewModel model);
+         Task<EventViewModel> UpdateEventAsync(int eventId, EventViewModel model);
          Task<bool> DeleteEventAsync(int eventId);
-         Task<Event[]> GetAllEventsAsync(bool includeLecturers = false);
-         Task<Event[]> GetAllEventsByNameAsync(string name, bool includeLecturers = false);
-         Task<Event> GetEventByIdAsync(int id, bool includeLecturers = false);
+         Task<EventViewModel[]> GetAllEventsAsync(bool includeLecturers = false);
+         Task<EventViewModel[]> GetAllEventsByNameAsync(string name, bool includeLecturers = false);
+         Task<EventViewModel> GetEventByIdAsync(int id, bool includeLecturers = false);
     }
 }
