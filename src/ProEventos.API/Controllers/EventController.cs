@@ -43,7 +43,7 @@ namespace ProEventos.API.Controllers
                 var response = await _eventService.GetEventByIdAsync(id, true);
 
                 if(response == null)
-                    return NotFound("Event not found");
+                    return NoContent();
 
                 return Ok(response);
             }
@@ -59,7 +59,7 @@ namespace ProEventos.API.Controllers
                 var response = await _eventService.GetAllEventsByNameAsync(name, true);
 
                 if(response == null || !response.Any())
-                    return NotFound("Event not found");
+                    return NoContent();
 
                 return Ok(response);
             }
@@ -75,7 +75,7 @@ namespace ProEventos.API.Controllers
                 var response = await _eventService.CreateEventAsync(model);
 
                 if(response == null)
-                    return BadRequest("Unable to register");
+                    return NoContent();
 
                 return Ok(response);
             }
@@ -91,7 +91,7 @@ namespace ProEventos.API.Controllers
                 var response = await _eventService.UpdateEventAsync(id, model);
 
                 if(response == null)
-                    return BadRequest("Unable to update");
+                    return NoContent();
 
                 return Ok(response);
             }
@@ -106,7 +106,7 @@ namespace ProEventos.API.Controllers
             try{
                 return await _eventService.DeleteEventAsync(id) ? 
                     Ok("Success") : 
-                    BadRequest("Unable to delete");
+                    throw new Exception("Unable to delete, review your parameters");
             }
             catch(Exception e){
                 return this.StatusCode(StatusCodes.Status500InternalServerError,

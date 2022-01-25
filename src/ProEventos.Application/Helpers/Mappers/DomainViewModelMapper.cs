@@ -10,6 +10,9 @@ namespace ProEventos.Application.Helpers.Mappers
         public DomainViewModelMapper()
         {
             CreateMap<Event, EventViewModel>();
+            CreateMap<Batch, BatchViewModel>();
+            CreateMap<SocialNetwork, SocialNetworkViewModel>();
+            CreateMap<Lecturer, LecturerViewModel>();
         }
     }
 }
