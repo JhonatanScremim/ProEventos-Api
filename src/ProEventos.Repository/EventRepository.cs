@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ProEventos.Repository.Context;
 using ProEventos.Domain;
 using ProEventos.Repository.Interfaces;
+using System.Collections.Generic;
 
 namespace ProEventos.Repository
 {
@@ -14,7 +15,7 @@ namespace ProEventos.Repository
         {
             _context = context;
         }
-         public async Task<Event[]> GetAllEventsAsync(bool includeLecturers)
+         public async Task<IEnumerable<Event>> GetAllEventsAsync(bool includeLecturers)
         {
             var query = _context.Event.Include(x => x.Batches).Include(x => x.SocialNetworks);
             
@@ -25,7 +26,7 @@ namespace ProEventos.Repository
             return await query.AsNoTracking().OrderBy(x => x.Id).ToArrayAsync();
         }
 
-        public async Task<Event[]> GetAllEventsByNameAsync(string name, bool includeLecturers)
+        public async Task<IEnumerable<Event>> GetAllEventsByNameAsync(string name, bool includeLecturers)
         {
             var query = _context.Event.Include(x => x.Batches).Include(x => x.SocialNetworks);
             

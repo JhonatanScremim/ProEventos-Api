@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using ProEventos.Application.Interfaces;
@@ -65,24 +66,24 @@ namespace ProEventos.Application
             return await _baseRepository.SaveChangesAsync();
         }
 
-        public async Task<EventViewModel[]> GetAllEventsAsync(bool includeLecturers = false)
+        public async Task<IEnumerable<EventViewModel>> GetAllEventsAsync(bool includeLecturers = false)
         {
             var events = await _eventRepository.GetAllEventsAsync(includeLecturers);
             
             if(events == null)
                 return null;
                 
-            return _mapper.Map<EventViewModel[]>(events);
+            return _mapper.Map<IEnumerable<EventViewModel>>(events);
         }
 
-        public async Task<EventViewModel[]> GetAllEventsByNameAsync(string name, bool includeLecturers = false)
+        public async Task<IEnumerable<EventViewModel>> GetAllEventsByNameAsync(string name, bool includeLecturers = false)
         {
             var events = await _eventRepository.GetAllEventsByNameAsync(name, includeLecturers);
 
             if(events == null)
                 return null;
 
-            return _mapper.Map<EventViewModel[]>(events);
+            return _mapper.Map<IEnumerable<EventViewModel>>(events);
         }
 
         public async Task<EventViewModel> GetEventByIdAsync(int id, bool includeLecturers = false)

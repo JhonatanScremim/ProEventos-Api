@@ -46,11 +46,13 @@ namespace ProEventos.API
 
             //services
             services.AddScoped<IEventService, EventService>();
+            services.AddScoped<IBatchService, BatchService>();
 
             //repositories
             services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<ILecturerRepository, LecturerRepository>();
+            services.AddScoped<IBatchRepository, BatchRepository>();
 
             services.AddCors();
             services.AddSwaggerGen(c =>

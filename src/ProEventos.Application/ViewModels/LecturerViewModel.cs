@@ -10,7 +10,7 @@ namespace ProEventos.Application.ViewModels
         public string ImageUrl { get; set; }
         public string Telephone { get; set; }
         public string Email { get; set; }
-        public IEnumerable<SocialNetworkViewModel> SocialNetworks { get; set; }
-        public IEnumerable<EventViewModel> Events { get; set; }
+        public List<SocialNetworkViewModel> SocialNetworks { get; set; }
+        public List<EventViewModel> Events { get; set; }
     }
 }

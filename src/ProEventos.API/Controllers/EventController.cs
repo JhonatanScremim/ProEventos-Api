@@ -35,9 +35,9 @@ namespace ProEventos.API.Controllers
                 "Error: " + e.Message);
             }
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetEventById(int id){
+        
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetEventById([FromQuery] int id){
             try{
 
                 var response = await _eventService.GetEventByIdAsync(id, true);
@@ -53,8 +53,8 @@ namespace ProEventos.API.Controllers
             }
         }
 
-        [HttpGet("name/{name}")]
-        public async Task<IActionResult> GetEventByName(string name){
+        [HttpGet("GetByName")]
+        public async Task<IActionResult> GetEventByName([FromQuery] string name){
             try{
                 var response = await _eventService.GetAllEventsByNameAsync(name, true);
 
