@@ -34,7 +34,7 @@ namespace ProEventos.Repository
                 query.Include(x => x.EventLecturers).ThenInclude(x => x.Event);
             }
             
-            return await query.AsNoTracking().Where(x => x.Name.ToLower().Contains(name.ToLower()))
+            return await query.AsNoTracking().Where(x => x.User.FirstName.ToLower().Contains(name.ToLower()))
                 .OrderBy(x => x.Id).ToArrayAsync();
         }
 

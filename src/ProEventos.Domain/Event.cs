@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using ProEventos.Domain.Identity;
 
 namespace ProEventos.Domain
 {
@@ -13,6 +14,8 @@ namespace ProEventos.Domain
         public string ImageUrl { get; set; }
         public string Telephone { get; set; }
         public string Email { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
         public List<Batch> Batches { get; set; }
         public List<SocialNetwork> SocialNetworks { get; set; }
         public List<EventLecturer> EventLecturers { get; set; }
