@@ -31,5 +31,10 @@ namespace ProEventos.Repository
         {
             return await _context.Users.AsNoTracking().Where(x => x.FirstName.ToLower().Contains(name)).ToListAsync();
         }
+
+        public async Task<User> GetUserByUserNameAsync(string username)
+        {
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserName.ToLower() == username.ToLower());
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace ProEventos.Repository.Interfaces
         Task<IEnumerable<User>> GetUsersAsync();
         Task<User> GetUserByIdAsync(int id);
         Task<IEnumerable<User>> GetUserByNameAsync(string name);
+        Task<User> GetUserByUserNameAsync(string username);
     }
 }
