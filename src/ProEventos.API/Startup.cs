@@ -22,6 +22,12 @@ using ProEventos.Repository.Context;
 using ProEventos.Application.Interfaces;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
+using ProEventos.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ProEventos.API
 {
@@ -40,8 +46,32 @@ namespace ProEventos.API
             services.AddDbContext<DataContext>(
                 x => x.UseSqlite(Configuration.GetConnectionString("Sqlite"))
             );
-            services.AddControllers().AddNewtonsoftJson(
-                x => x.SerializerSettings.ReferenceLoopHandling =
+
+            services.AddIdentityCore<User>(x => 
+            {
+                x.Password.RequireDigit = false;
+                x.Password.RequireNonAlphanumeric = false;
+                x.Password.RequireLowercase = false;
+                x.Password.RequireUppercase = false;
+                x.Password.RequiredLength = 4;
+            }).AddRoles<Role>().AddRoleManager<RoleManager<Role>>().AddSignInManager<SignInManager<User>>()
+                .AddRoleValidator<RoleValidator<Role>>().AddEntityFrameworkStores<DataContext>().AddDefaultTokenProviders();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(x => 
+                {
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Key"])),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
+
+            services.AddControllers()
+                .AddJsonOptions(x => x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling =
                     Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
@@ -50,12 +80,15 @@ namespace ProEventos.API
             //services
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IBatchService, BatchService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             //repositories
             services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<ILecturerRepository, LecturerRepository>();
             services.AddScoped<IBatchRepository, BatchRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddCors();
             services.AddSwaggerGen(c =>
