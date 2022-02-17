@@ -1,6 +1,7 @@
 using AutoMapper;
 using ProEventos.Application.ViewModels;
 using ProEventos.Domain;
+using ProEventos.Domain.Identity;
 
 namespace ProEventos.Application.Helpers.Mappers
 {
@@ -12,6 +13,8 @@ namespace ProEventos.Application.Helpers.Mappers
             CreateMap<BatchViewModel, Batch>();
             CreateMap<SocialNetworkViewModel, SocialNetwork>();
             CreateMap<LecturerViewModel, Lecturer>();
+            CreateMap<UserViewModel, User>();
+            CreateMap<UserUpdateViewModel, User>();
         }
     }
 }

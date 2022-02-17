@@ -111,7 +111,9 @@ namespace ProEventos.API
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication(); //Primeio autentica
+            app.UseAuthorization(); //Depois autoriza
+
             app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseStaticFiles(new StaticFileOptions(){
