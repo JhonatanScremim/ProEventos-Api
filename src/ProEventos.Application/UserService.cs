@@ -66,8 +66,10 @@ namespace ProEventos.Application
 
             _mapper.Map(user, oldUser);
 
-            var token = await _userManager.GeneratePasswordResetTokenAsync(oldUser);
-            var result = await _userManager.ResetPasswordAsync(oldUser, token, user.Password);
+
+            //Para que o usuario se mantenha logado após atualizar a senha 
+            // var token = await _userManager.GeneratePasswordResetTokenAsync(oldUser);
+            // await _userManager.ResetPasswordAsync(oldUser, token, user.Password);
 
             _userRepository.Update<User>(oldUser);
 
