@@ -12,27 +12,32 @@ using ProEventos.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using ProEventos.Application.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using ProEventos.API.Extensions;
 
 namespace ProEventos.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IUserService _userService;
 
-        public EventController(IEventService eventService, IWebHostEnvironment hostEnvironment)
+        public EventController(IEventService eventService, IWebHostEnvironment hostEnvironment, IUserService userService)
         {
             _eventService = eventService;
             _hostEnvironment = hostEnvironment;
+            _userService = userService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllEvents()
         {
             try{
-                return Ok(await _eventService.GetAllEventsAsync(true));
+                return Ok(await _eventService.GetAllEventsAsync(User.GetUserId(), true));
             }
             catch(Exception e){
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
@@ -44,7 +49,7 @@ namespace ProEventos.API.Controllers
         public async Task<IActionResult> GetEventById([FromQuery] int id){
             try{
 
-                var response = await _eventService.GetEventByIdAsync(id, true);
+                var response = await _eventService.GetEventByIdAsync(User.GetUserId(), id, true);
 
                 if(response == null)
                     return NoContent();
@@ -60,7 +65,7 @@ namespace ProEventos.API.Controllers
         [HttpGet("GetByName")]
         public async Task<IActionResult> GetEventByName([FromQuery] string name){
             try{
-                var response = await _eventService.GetAllEventsByNameAsync(name, true);
+                var response = await _eventService.GetAllEventsByNameAsync(User.GetUserId(), name, true);
 
                 if(response == null || !response.Any())
                     return NoContent();
@@ -76,7 +81,7 @@ namespace ProEventos.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] EventViewModel model){
             try{
-                var response = await _eventService.CreateEventAsync(model);
+                var response = await _eventService.CreateEventAsync(User.GetUserId(), model);
 
                 if(response == null)
                     return NoContent();
@@ -93,7 +98,7 @@ namespace ProEventos.API.Controllers
         public async Task<IActionResult> UploadImage(int eventId){
             try{
                 
-                var oldEvent = await _eventService.GetEventByIdAsync(eventId);
+                var oldEvent = await _eventService.GetEventByIdAsync(User.GetUserId(), eventId);
                 if(oldEvent == null)
                     return NoContent();
 
@@ -104,7 +109,7 @@ namespace ProEventos.API.Controllers
                     DeleteImage(oldEvent.ImageUrl);
                     oldEvent.ImageUrl = await SaveImage(file);
                 }
-                var response = await _eventService.UpdateEventAsync(eventId, oldEvent);
+                var response = await _eventService.UpdateEventAsync(User.GetUserId(), eventId, oldEvent);
                 if(response == null)
                     return NoContent();
 
@@ -120,7 +125,7 @@ namespace ProEventos.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] EventViewModel model){
             try{
-                var response = await _eventService.UpdateEventAsync(id, model);
+                var response = await _eventService.UpdateEventAsync(User.GetUserId(), id, model);
 
                 if(response == null)
                     return NoContent();
@@ -136,7 +141,7 @@ namespace ProEventos.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id){
             try{
-                return await _eventService.DeleteEventAsync(id) ? 
+                return await _eventService.DeleteEventAsync(User.GetUserId(), id) ? 
                     Ok("Success") : 
                     throw new Exception("Unable to delete, review your parameters");
             }

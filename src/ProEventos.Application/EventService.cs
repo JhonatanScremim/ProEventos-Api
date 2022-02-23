@@ -22,9 +22,12 @@ namespace ProEventos.Application
             _mapper = mapper;
         }
 
-        public async Task<EventViewModel> CreateEventAsync(EventViewModel model)
+        public async Task<EventViewModel> CreateEventAsync(int userId, EventViewModel model)
         {
-            _baseRepository.Create<Event>(_mapper.Map<Event>(model));
+            var newEvent = _mapper.Map<Event>(model);
+            newEvent.UserId = userId;
+
+            _baseRepository.Create<Event>(newEvent);
 
             if(await _baseRepository.SaveChangesAsync()) 
                 return model;
@@ -32,12 +35,12 @@ namespace ProEventos.Application
             return null;
         }
         
-        public async Task<EventViewModel> UpdateEventAsync(int eventId, EventViewModel model)
+        public async Task<EventViewModel> UpdateEventAsync(int userId, int eventId, EventViewModel model)
         {
             if(eventId == default)
                 throw new Exception("Event ID parameter is required!"); 
 
-            var oldEvent = await _eventRepository.GetEventByIdAsync(eventId, false);
+            var oldEvent = await _eventRepository.GetEventByIdAsync(userId, eventId, false);
             if(oldEvent == null) 
                 return null;
 
@@ -52,12 +55,12 @@ namespace ProEventos.Application
             return null;
         }
 
-        public async Task<bool> DeleteEventAsync(int eventId)
+        public async Task<bool> DeleteEventAsync(int userId, int eventId)
         {
             if(eventId == default)
                 throw new Exception("Event ID is required!");
 
-            var oldEvent = await _eventRepository.GetEventByIdAsync(eventId, false);
+            var oldEvent = await _eventRepository.GetEventByIdAsync(userId, eventId, false);
             if(oldEvent == null) 
                 throw new Exception("Event not find");
             
@@ -66,9 +69,9 @@ namespace ProEventos.Application
             return await _baseRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<EventViewModel>> GetAllEventsAsync(bool includeLecturers = false)
+        public async Task<IEnumerable<EventViewModel>> GetAllEventsAsync(int userId, bool includeLecturers = false)
         {
-            var events = await _eventRepository.GetAllEventsAsync(includeLecturers);
+            var events = await _eventRepository.GetAllEventsAsync(userId, includeLecturers);
             
             if(events == null)
                 return null;
@@ -76,9 +79,9 @@ namespace ProEventos.Application
             return _mapper.Map<IEnumerable<EventViewModel>>(events);
         }
 
-        public async Task<IEnumerable<EventViewModel>> GetAllEventsByNameAsync(string name, bool includeLecturers = false)
+        public async Task<IEnumerable<EventViewModel>> GetAllEventsByNameAsync(int userId, string name, bool includeLecturers = false)
         {
-            var events = await _eventRepository.GetAllEventsByNameAsync(name, includeLecturers);
+            var events = await _eventRepository.GetAllEventsByNameAsync(userId, name, includeLecturers);
 
             if(events == null)
                 return null;
@@ -86,9 +89,9 @@ namespace ProEventos.Application
             return _mapper.Map<IEnumerable<EventViewModel>>(events);
         }
 
-        public async Task<EventViewModel> GetEventByIdAsync(int id, bool includeLecturers = false)
+        public async Task<EventViewModel> GetEventByIdAsync(int userId, int id, bool includeLecturers = false)
         {
-            var response =  await _eventRepository.GetEventByIdAsync(id, includeLecturers);
+            var response =  await _eventRepository.GetEventByIdAsync(userId, id, includeLecturers);
 
             if(response == null)
                 return null;

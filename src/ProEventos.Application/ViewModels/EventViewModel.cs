@@ -24,6 +24,8 @@ namespace ProEventos.Application.ViewModels
 
         [Required, EmailAddress]
         public string Email { get; set; }
+        public int UserId { get; set; }
+        public UserViewModel User { get; set; }
         public List<BatchViewModel> Batches { get; set; }
         public List<SocialNetworkViewModel> SocialNetworks { get; set; }
         public List<LecturerViewModel> Lecturers { get; set; }
