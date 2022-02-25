@@ -63,15 +63,15 @@ namespace ProEventos.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(UserViewModel userViewModel)
+        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
             try
             {
-                var user = await _userService.GetUserByUserNameAsync(userViewModel.UserName);
+                var user = await _userService.GetUserByUserNameAsync(loginViewModel.UserName);
                 if(user == null)
                     return Unauthorized("Invalid User");
 
-                var result = await _userService.CheckUserPasswordAsync(user, userViewModel.Password);
+                var result = await _userService.CheckUserPasswordAsync(user, loginViewModel.Password);
                 if(!result.Succeeded)
                     return Unauthorized("Ivalid Password");
 
