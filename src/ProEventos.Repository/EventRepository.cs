@@ -5,6 +5,7 @@ using ProEventos.Repository.Context;
 using ProEventos.Domain;
 using ProEventos.Repository.Interfaces;
 using System.Collections.Generic;
+using ProEventos.Repository.Models;
 
 namespace ProEventos.Repository
 {
@@ -15,7 +16,7 @@ namespace ProEventos.Repository
         {
             _context = context;
         }
-         public async Task<IEnumerable<Event>> GetAllEventsAsync(int userId, bool includeLecturers)
+         public IQueryable<Event> GetAllEvents(int userId, bool includeLecturers)
         {
             var query = _context.Event.Include(x => x.Batches).Include(x => x.SocialNetworks);
             
@@ -23,7 +24,19 @@ namespace ProEventos.Repository
                 query.Include(x => x.EventLecturers).ThenInclude(x => x.Lecturer);
             }
             
-            return await query.AsNoTracking().Where(x => x.UserId == userId).OrderBy(x => x.Id).ToArrayAsync();
+            return query.AsNoTracking().Where(x => x.UserId == userId).OrderBy(x => x.Id);
+        }
+
+        public async Task<PageList<Event>> GetAllEventsPaginatedAsync(int userId, PageParams pageParams, bool includeLecturers)
+        {
+            var query = _context.Event.Include(x => x.Batches).Include(x => x.SocialNetworks);
+            
+            if(includeLecturers)
+                query.Include(x => x.EventLecturers).ThenInclude(x => x.Lecturer);
+            
+            var response = query.AsNoTracking().Where(x => x.UserId == userId).OrderBy(x => x.Id);
+            
+            return await PageList<Event>.CreateAsync(response, pageParams.PageNumber, pageParams.PageSize);
         }
 
         public async Task<IEnumerable<Event>> GetAllEventsByNameAsync(int userId, string name, bool includeLecturers)
@@ -37,7 +50,6 @@ namespace ProEventos.Repository
             return await query.AsNoTracking().Where(x => x.Name.ToLower().Contains(name.ToLower()) && x.UserId == userId)
                 .OrderBy(x => x.Id).ToArrayAsync();
         }
-
 
         public async Task<Event> GetEventByIdAsync(int userId, int id, bool includeLecturers)
         {

@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Net;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -6,6 +8,7 @@ using ProEventos.Application.Interfaces;
 using ProEventos.Application.ViewModels;
 using ProEventos.Domain;
 using ProEventos.Repository.Interfaces;
+using ProEventos.Repository.Models;
 
 namespace ProEventos.Application
 {
@@ -69,23 +72,19 @@ namespace ProEventos.Application
             return await _baseRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<EventViewModel>> GetAllEventsAsync(int userId, bool includeLecturers = false)
+        public async Task<PageList<Event>> GetAllEventsAsync(int userId, PageParams pageParams, bool includeLecturers = false)
         {
-            var events = await _eventRepository.GetAllEventsAsync(userId, includeLecturers);
-            
-            if(events == null)
-                return null;
-                
-            return _mapper.Map<IEnumerable<EventViewModel>>(events);
+            var events = _eventRepository.GetAllEvents(userId, includeLecturers);
+            var page = await PageList<Event>.CreateAsync(events, pageParams.PageNumber, pageParams.PageSize);
+
+            return page;
         }
 
         public async Task<IEnumerable<EventViewModel>> GetAllEventsByNameAsync(int userId, string name, bool includeLecturers = false)
         {
             var events = await _eventRepository.GetAllEventsByNameAsync(userId, name, includeLecturers);
-
             if(events == null)
                 return null;
-
             return _mapper.Map<IEnumerable<EventViewModel>>(events);
         }
 

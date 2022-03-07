@@ -14,6 +14,7 @@ using ProEventos.Application.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using ProEventos.API.Extensions;
+using ProEventos.Repository.Models;
 
 namespace ProEventos.API.Controllers
 {
@@ -34,10 +35,24 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllEvents()
+        public async Task<IActionResult> GetAllEvents([FromQuery] PageParams pageParams)
         {
             try{
-                return Ok(await _eventService.GetAllEventsAsync(User.GetUserId(), true));
+                return Ok(await _eventService.GetAllEventsAsync(User.GetUserId(), pageParams, true));
+            }
+            catch(Exception e){
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                "Error: " + e.Message);
+            }
+        }
+
+        [HttpGet("GetByName")]
+        public async Task<IActionResult> GetEventByName([FromQuery] string name){
+            try{
+                var response = await _eventService.GetAllEventsByNameAsync(User.GetUserId(), name, true);
+                if(response == null || !response.Any())
+                    return NoContent();
+                return Ok(response);
             }
             catch(Exception e){
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
@@ -52,22 +67,6 @@ namespace ProEventos.API.Controllers
                 var response = await _eventService.GetEventByIdAsync(User.GetUserId(), id, true);
 
                 if(response == null)
-                    return NoContent();
-
-                return Ok(response);
-            }
-            catch(Exception e){
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                "Error: " + e.Message);
-            }
-        }
-
-        [HttpGet("GetByName")]
-        public async Task<IActionResult> GetEventByName([FromQuery] string name){
-            try{
-                var response = await _eventService.GetAllEventsByNameAsync(User.GetUserId(), name, true);
-
-                if(response == null || !response.Any())
                     return NoContent();
 
                 return Ok(response);
